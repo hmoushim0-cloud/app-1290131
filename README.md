@@ -117,3 +117,51 @@ cd app-1290131
 
 ### Live Showcase & Cloud Verification
 - **Verified Showcase:** [https://hmoushim0-cloud.github.io/live-previews/?id=1290131](https://hmoushim0-cloud.github.io/live-previews/?id=1290131)
+
+
+---
+
+## [Sidekick Autonomous Update]
+
+### 1. Overview
+Sidekick autonomous companion enhancement (Iteration 21). Implemented computational chemistry curriculum evaluation, Qiyas / Tahseeli question auditing, and digital laboratory spectrophotometry telemetry for the Saudi educational assessment ecosystem.
+
+### 2. Features Implemented
+
+#### Feature A: Saudi National Tahseeli Chemistry Curriculum Engine (`TahsiliChemistryAuditEngine.kt`)
+- **Chemical Formula Parsing & Molar Mass**: Computes exact molecular weights and elemental mass percentages across standard IUPAC atomic weights ($H_2O, CaCO_3, C_6H_{12}O_6, H_2SO_4$, etc.).
+- **Acid-Base Equilibrium & Titration Kinetics**: Evaluates $[H^+], [OH^-], pH, pOH$ ($pH + pOH = 14.0$), solution classification, and equivalence point volume calculation for monoprotic and polyprotic acid-base titrations ($M_1 V_1 n_1 = M_2 V_2 n_2$).
+- **Electrochemistry & Thermochemistry**: Calculates standard galvanic cell reduction potentials ($E^\circ_{cell} = E^\circ_{cathode} - E^\circ_{anode}$), thermodynamic spontaneity ($\Delta G^\circ < 0$), and Hess's law reaction enthalpy ($\Delta H^\circ_{rxn}$) with endothermic/exothermic classification.
+- **Qiyas Exam Question Quality Audit**: Verifies that Tahseeli multiple-choice questions adhere to Ministry of Education guidelines: exactly 4 distinct options, valid correct option indexing, sufficient stem depth, and scientific rationale explanation.
+
+#### Feature B: Digital Laboratory Photometer & pH Electrode Driver (`LabColorimeterPhotometerDriver.kt`)
+- **16-Byte Binary Stream Protocol v2.0**: High-precision framing with Magic Header `0xC845`, sequence tracking, wavelength ($\lambda$ in nm), transmittance ($\%T$), pH, solution temperature ($^\circ C$), and oxidation-reduction potential (ORP mV).
+- **Beer-Lambert Law Engine**: Converts raw transmittance to absorbance ($A = -\log_{10}(T/100)$) and determines unknown analyte molar concentration ($c = \frac{A}{\epsilon \cdot b}$).
+- **CRC-16-CCITT Data Protection**: Computes and validates `0x1021` polynomial checksums across every streaming frame to eliminate corrupted serial sensor telemetry.
+
+### 3. Verification & Unit Testing
+Comprehensive JUnit 4 test suite in `TahsiliChemistryAuditTest.kt`:
+- `testMolarMassCalculationAndPercentages`: PASSED
+- `testAcidBaseEquilibriumMetrics`: PASSED
+- `testTitrationEquivalenceVolumeCalculation`: PASSED
+- `testGalvanicCellPotentialAndSpontaneity`: PASSED
+- `testHessLawReactionEnthalpy`: PASSED
+- `testTahsiliQuestionVerificationAudit`: PASSED
+- `testPhotometerDriverSerializationAndBeerLambertLaw`: PASSED
+
+Total: 7/7 tests passing (100% success rate).
+
+### 4. How to Run Tests
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-arm64
+export PATH=$JAVA_HOME/bin:$PATH
+CP="/usr/share/java/junit4-4.13.2.jar:/usr/share/java/hamcrest-2.2.jar:/usr/share/java/kotlin-stdlib.jar"
+
+mkdir -p /tmp/iter21_bin
+kotlinc -Xskip-metadata-version-check -cp "$CP" -d /tmp/iter21_bin \
+  app/src/main/java/sa/factory/app1290131/curriculum/TahsiliChemistryAuditEngine.kt \
+  app/src/main/java/sa/factory/app1290131/hardware/LabColorimeterPhotometerDriver.kt \
+  app/src/test/java/sa/factory/app1290131/TahsiliChemistryAuditTest.kt
+
+java -cp "/tmp/iter21_bin:$CP" org.junit.runner.JUnitCore sa.factory.app1290131.TahsiliChemistryAuditTest
+```
